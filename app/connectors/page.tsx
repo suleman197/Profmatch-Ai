@@ -9,19 +9,17 @@ import {
   AlertCircle,
   ExternalLink,
   Trash2,
-  RefreshCw,
   ArrowLeft,
   Loader2,
-  Lock,
-  User,
-  Sparkles
+  Sparkles,
+  Link2
 } from 'lucide-react';
 
-export default function SettingsPage() {
+export default function ConnectorsPage() {
   const [checkingStatus, setCheckingStatus] = useState(true);
   const [connectedStatus, setConnectedStatus] = useState<{
     connected: boolean;
-    account?: { email: string; connected_at: string; scope: string } | null;
+    account?: { email: string; connected_at: string } | null;
   }>({ connected: false });
   const [disconnecting, setDisconnecting] = useState(false);
 
@@ -36,7 +34,7 @@ export default function SettingsPage() {
       const data = await res.json();
       if (res.ok) {
         setConnectedStatus({
-          connected: !!data.connected,
+          connected: !!(data.connected || data.isConnected),
           account: data.account || null,
         });
       }
@@ -48,7 +46,7 @@ export default function SettingsPage() {
   };
 
   const handleConnectGmail = () => {
-    window.location.href = '/api/auth/google/gmail';
+    window.location.href = '/api/auth/google/gmail?redirectTo=/connectors';
   };
 
   const handleDisconnectGmail = async () => {
@@ -87,10 +85,10 @@ export default function SettingsPage() {
         {/* Page Header */}
         <div className="space-y-2 border-b border-slate-800 pb-6">
           <h1 className="font-heading text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-            Account Settings &amp; Integrations
+            <Link2 className="w-8 h-8 text-emerald-400" /> Connectors &amp; External Integrations
           </h1>
           <p className="text-sm text-slate-400">
-            Manage connected email services, Google OAuth permissions, and security scope settings.
+            Manage your connected email providers, OAuth integrations, and automated draft syncing.
           </p>
         </div>
 
@@ -98,10 +96,10 @@ export default function SettingsPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <Mail className="w-5 h-5 text-emerald-400" /> Email Integration (Google OAuth)
+              <Mail className="w-5 h-5 text-emerald-400" /> Email Integrations (Google OAuth)
             </h2>
             <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-              Direct Gmail Drafts Enabled
+              Direct Gmail Drafts Active
             </span>
           </div>
 
@@ -175,11 +173,11 @@ export default function SettingsPage() {
               </div>
             )}
 
-            {/* Privacy & Minimal Scope Guarantees */}
+            {/* Security & Privacy Guarantees */}
             <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-3 text-xs">
               <h4 className="font-bold text-white flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                Security &amp; Minimal Scope Privacy Guarantees
+                Security &amp; Privacy Guarantees
               </h4>
               <ul className="space-y-2 text-slate-300 leading-relaxed font-light">
                 <li className="flex items-start gap-2">
@@ -191,7 +189,7 @@ export default function SettingsPage() {
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                   <span>
-                    <strong className="text-white">Minimal Scope Only (<code className="text-emerald-300 font-mono">gmail.compose</code>):</strong> We only request access to create email drafts. We cannot read your inbox or edit existing emails.
+                    <strong className="text-white">Minimal Scope Only:</strong> We only request access to create email drafts. We cannot read your inbox or edit existing emails.
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
